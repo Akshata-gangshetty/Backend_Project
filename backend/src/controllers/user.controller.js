@@ -1,7 +1,7 @@
 import {asynchandler  } from "../utils/asynchandler.js";
 import {Apierror} from "../utils/apiError.js";
 import {User} from  "../models/user.model.js"
-import {uploadOncloudinary} from "../utils/cloudinary.js"
+import {uploadImage} from "../utils/cloudinary.js"
 import { Apiresponse } from "../utils/Apiresponse.js";
 const registerUser =asynchandler(async(req,res)=>{
     //get user details from Frontend
@@ -29,11 +29,14 @@ const registerUser =asynchandler(async(req,res)=>{
     if(!avatarlocalPath){
         throw new Apierror(400,"Avatar is required")
     }
-    const avatar = await uploadOncloudinary(avatarlocalPath)
-    const coverImage = await uploadOncloudinary(coverImagelocalPath)
+    const avatar = await uploadImage(avatarlocalPath)
+    const coverImage = await uploadImage(coverImagelocalPath)
     if (!avatar) {
         throw new Apierror(400,"Avatar file upload failed")
     }
+    console.log("BODY",req.body);
+    console.log("FILES",req.files);
+    
    const user= await User.create({
         fullname,
         avatar:avatar.url,
