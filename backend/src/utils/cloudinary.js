@@ -22,16 +22,17 @@ const uploadImage = async (localFilePath) => {
             }
         );
 
-        console.log("File uploaded successfully:", response.url);
+        // console.log("File uploaded successfully:", response.url);
+        fs.unlinkSync(localFilePath)
 
         return response;
 
     } catch (error) {
         console.log("CLOUDINARY ERROR:", error);
 
-        if (fs.existsSync(localFilePath)) {
-            fs.unlinkSync(localFilePath);
-        }
+        // if (fs.existsSync(localFilePath)) {
+        //     fs.unlinkSync(localFilePath);
+        // }
 
         return null;
     }
