@@ -261,10 +261,50 @@ const logoutUser = asynchandler(async (req, res) => {
             )
         );
 });
+const refreshAccssToken=asyncHandler (async(req,res)=>{
+   const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+   if(incomingRefreshToken){
+    throw new Apierror(401,"unothoizes request")
+   }
+   try{
+    const decodedToken=jwt.verify(
+    incomingRefreshToken,
+    process.env.REFRESH_TOKEN_SECRET
+   )
+   const user=await User.findById(decodedToken?._id)
+   if(!user){
+    throw new Apierror(401,"invlaid refreshToken");
+   }
+   if(user.refreshtoken!==incomingRefreshToken){
+    throw new Apierror(401," refreshToken is expired or used ")
 
+   } 
+   const options={
+    httpOnly:true,
+    secure:true
+   }
+   const{accessToken,newrefreshToken}=await gt(user._id)
+   return res
+   .status(200)
+   .cookie("accessToken",accessToken,options)
+   .cookie("refreshToken",newrefreshToken,options)
+   .json(new Apiresponse(
+    200,
+    {accessToken,refresshToken:newrefreshToken},
+    "AccessedToken refreshed"
+   ))
+
+
+   }
+   catch(error){
+    throw new Apierror(500,"Failed to refresh access token")
+   }
+   })
+   
 
 export {
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    refreshAccssToken
 };

@@ -18,6 +18,7 @@ router.route("/register").post(
     registerUser)
     router.route("/login").post(loginUser)
     router.route("/logout").post(verifyJWt,logoutUser)
+    router.route("/refresh").post(refreshAccssToken)
 
 
 
