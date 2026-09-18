@@ -263,7 +263,7 @@ const logoutUser = asynchandler(async (req, res) => {
 });
 const refreshAccssToken=asyncHandler (async(req,res)=>{
    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
-   if(incomingRefreshToken){
+   if(!incomingRefreshToken){
     throw new Apierror(401,"unothoizes request")
    }
    try{
