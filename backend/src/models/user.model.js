@@ -49,12 +49,16 @@ const userSchema =new Schema({
 },{timestamps:true})
 userSchema.pre("save",async function name() {
     if(!this.isModified("password")) return ;
+    if(typeof this.password !== "string" || !this.password.trim()) {
+        throw new Error("Password is required")
+    }
     this.password= await bcrypt.hash(this.password,10)
 
     
     
 })
 userSchema.methods.isPasswordCorrect= async function(password){
+    if(typeof password !== "string" || typeof this.password !== "string") return false
    return await bcrypt.compare(password,this.password)
 }
 userSchema.methods.generateAccessToken=function(){
