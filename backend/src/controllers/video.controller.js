@@ -100,6 +100,37 @@ const getVideoById = asyncHandler(async (req, res) => {
 const updateVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
     //TODO: update video details like title, description, thumbnail
+    const {title,description}=req.body
+    const Video=await video.findById(videoId);
+    if(!Video){
+        throw new Apierror(400,"Video  is not found")
+    }
+    if (Video.owner.toString()!==req.user._id.to) {
+         throw new Apierror(400,"you are not authorized to update this video")
+        
+    }
+    if(title){
+        Video.title=title
+    }
+    if(description){
+        Video.description=description
+    }
+    if (req.file) {
+        const thumbnaillocalpath=req.file.path
+    
+    const thumbnail=await uploadImage(thumbnaillocalpath);
+     if(thumbnail){
+        throw new Apierror(400,"thumbnail upload is failed")
+    }
+        Video.thumbnail=thumbnail.url
+    }
+    await video.save()
+    return res
+    .status(200)
+    .json(new Apiresponse(200,video,"Video updated successfully"))
+    
+
+
     
 
 })
@@ -107,10 +138,34 @@ const updateVideo = asyncHandler(async (req, res) => {
 const deleteVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
     //TODO: delete video
+     const Video=await video.findById(videoId);
+    if(!Video){
+        throw new Apierror(400,"Video  is not found")
+    }
+    if (Video.owner.toString()!==req.user._id.to) {
+         throw new Apierror(400,"you are not authorized to delete this video")
+        
+    }
+    await Video.findByIdandDelete( videoId)
+     return res
+    .status(201)
+    .json(new Apiresponse(200,video,"Video is deleted successfully"))
+    
+
 })
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
     const { videoId } = req.params
+    //TODO: delete video
+     const Video=await video.findById(videoId);
+    if(!Video){
+        throw new Apierror(400,"Video  is not found")
+    }
+    Video.isPublished=!Video.isPublished
+    await Video.save()
+     return res
+    .status(201)
+    .json(new Apiresponse(200,video,"Publish status updated successfully"))
 })
 
 export {
