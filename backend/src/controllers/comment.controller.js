@@ -27,7 +27,7 @@ const getVideoComments = asynchandler(async (req, res) => {
 
 
 
-const addComment = asyncHandler(async (req, res) => {
+const addComment = asynchandler(async (req, res) => {
     const { videoId } = req.params;
     const { content } = req.body;
 

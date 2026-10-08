@@ -1,4 +1,4 @@
-const asynchandler = (requestHandler) => {
+const asyncHandler = (requestHandler) => {
     return async (req, res, next) => {
         try {
             await requestHandler(req, res, next);
@@ -8,4 +8,6 @@ const asynchandler = (requestHandler) => {
     };
 };
 
-export { asynchandler };
+const asynchandler = asyncHandler;
+
+export { asyncHandler, asynchandler };
